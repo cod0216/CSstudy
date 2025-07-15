@@ -99,6 +99,7 @@
 ## API 호출
 
 <img width="896" height="142" alt="스크린샷 2025-07-15 오전 10 08 52" src="https://github.com/user-attachments/assets/1ec01cee-9e28-491e-91fc-ae0f2a355deb" />
+
 1. 클라이언트가 `Authorization: Bearer 토큰 값` 헤더와 함께 요청
 2. `JwtAuthenticationFilter` 클래스의 `doFilterInternal()`에서 헤더 추출
 3. `JwtUtil` 클래스에서 유효성 검사
