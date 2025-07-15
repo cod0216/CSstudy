@@ -78,7 +78,8 @@ ps.executeQuery();
 	- 트랜잭션, 인덱스 스캔, I/O 등 내부 처리
 
 
-## 03. MyBatis와 JPA의 차이
+
+# 03. MyBatis와 JPA의 차이
 
 ### 장단점
 |        | MyBatis                                                                                                              | JPA                                                                                                                                                                                                        |
