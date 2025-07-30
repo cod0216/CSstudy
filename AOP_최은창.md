@@ -86,7 +86,7 @@ public class 예약서비스{
 ### 빈 후처리기(BeanPostProcessor)의 프록시 생성방법
 ![](https://velog.velcdn.com/images/cod0216/post/264d0d64-e533-425f-a2cc-d3c9a700b350/image.png)
 - 빈 후처리기는 ProxyFactory를 사용하여 프록시를 동적으로 생성한다.
-- ProxyFactory는 CGLIB를 통해 대상 클래스(`예약 서비스`)를 상속받는 프록시를 생성한다.
+- ProxyFactory는 CGLIB를 통해 대상 클래스(`예약 서비스`)를 상속받는 프록시를 생성한다.
   - CGLIB는 대상 크래스가 인터페이스를 구현하지 않았거나 CGLIB 설정 시 사용된다.
 - 프록시를 생성할 때 매칭되는 Advisor들을 내부에 등록하고, 메서드 실행 시 Advisor의 Advice를 실행할 수 있도록 구성된다.
 - 이렇게 생성된 프록시는 스프링 컨테이너에 등록된다.
