@@ -94,19 +94,19 @@ public class 예약서비스{
 # 03. AOP로 전부 적용하면 어떨까?
 ```java
 @Aspect
-@Componet
+@Component
 public class 예약하기AOP {
 
 	@Before("excution(* com.example.*예약하기(...)))
-	public void 예약하기(Sgtring content) {
+	public void 예약하기(String content) {
 		예약하기_로직()
-		System.out.println("DB에 저장됨" : + content);
+		System.out.println("DB에 저장됨 : " + content);
 	}
 }
 
 public class 예약 서비스 {
 	public void 예약하기() {
-		System.outprintln("예약하기 로직이 실행됨");
+		System.out.println("예약하기 로직이 실행됨");
 	}
 }
 ```
