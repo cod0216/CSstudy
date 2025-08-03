@@ -76,7 +76,7 @@ public class 예약서비스{
 
 ### AOP 적용시 Spring 원리
 
-![](https://velog.velcdn.com/images/cod0216/post/c9eccb09-b744-4ed1-81f4-24b33c1808ca/image.png)
+![](https://velog.velcdn.com/images/cod0216/post/66b10212-c84c-41d2-b0be-673751399c97/image.png)
 - 스프링에서 `예약 서비스`객체 생성 이후 **빈 후처리기에 객체를 전달**한다.
 -  빈 후처리기에서는 Advisor를 생성한다.
 - 이후 빈에 적용 가능한 Advisor를 매칭한다.
