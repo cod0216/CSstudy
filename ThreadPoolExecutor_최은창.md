@@ -52,8 +52,8 @@ public interface ExecutorService extends Executor, AutoCloseable {
 
 <img width="526" height="312" alt="image" src="https://github.com/user-attachments/assets/d490b1d7-5576-41ef-851f-0cd8f4b770b6" />
 
-
 3-1. 작업이 완료되면 스레드 풀에 스레드를 반납 (`WATING 상태`)
+
 <img width="524" height="305" alt="스크린샷 2025-08-20 오전 11 42 36" src="https://github.com/user-attachments/assets/d1a43824-d71f-452e-b9b4-8aef100f8b07" />
 
 
