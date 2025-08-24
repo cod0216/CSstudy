@@ -134,6 +134,109 @@ new ThreadPoolExecutor(100, 200, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(
 - 추가로 긴급 대응 가능한 긴급 스레드 100개를 사용
 - 1000개의 작업이 큐에 대기 가능
 
+# 03. Executor 예외 정책
+- 소비자가 처리할 수 없을 정도로 생산 요청이 가득 찬 경우에 대한 정책
+
+## 예외 정책 4가지
+`ThreadPoolExecutor`는 작업을 거절하는 다양한 정책을 제공
+1. **AbortPolicy** 
+	- 새로운 작업을 제출 시 `RejectedExecutionException` 발생 **(기본 정책)**
+2. **DiscardPolicy**
+	- 새로운 작업을 조용히 버림
+3. **CallerRunsPolicy**
+	- 새로운 작업을 제출한 스레드가 대신해서 직접 작업을 실행
+4. **사용자 정의(`RejectedExecutionHandler)**
+	- 개발자가 직접 정의한 거절 정책 사용
+
+> 해당 정책은 `shutdown()` 호출 후 거절된 작업에도 같은 정책이 적용됨
+
+
+## RejectedExecutionHandler 인터페이스
+
+```java
+public interface RejectedExecutionHandler {
+	void rejectedExecution(Runnable r, ThreadPoolExecutor executor);
+}
+```
+- `ThreadPoolExecutor`가 거절 하는 상황 발생 시 해당 클래스를 상속받은 구현체에 정의된 정책을 사용한다.
+- `ThreadPoolExecutor`의 마지막 인자에 해당 인터페이스의 구현체를 넣어 사용
+
+
+## AbortPolicy
+```java
+ExecutorService es = new ThreadPoolExecutor(1,1,0, TimeUnit.SECONDS,  
+        new SynchronousQueue<>(), new ThreadPoolExecutor.AbortPolicy());
+```
+- 기본적으로 설정되어 있는 정책
+- **작업이 거절되면 `RejectedExecutionException` 을 던짐** 
+- `AbortPolicy`는 `RejectedExecutionHandler`의 구현체
+```java
+public static class AbortPolicy implements RejectedExecutionHandler {
+	public void rejectedExectuion(Runnable r, ThreadPoolExecutor e) {
+		throw new RejectedExecutionException("Task "+ r.toStrig() + " rejected from " + e.toString());
+	}
+}
+```
+
+
+## DiscardPolicy
+```java
+ExecutorService es = new ThreadPoolExecutor(1,1,0, TimeUnit.SECONDS,  
+        new SynchronousQueue<>(), new ThreadPoolExecutor.DiscardPolicy());
+```
+- **거절된 작업을 무시하고 아무런 예외를 발생 시키지 않음**
+- `DiscardPolicy`는 `RejectedExecutionHandler`의 구현체
+```java
+public static class DiscardPolicy implements RejectedExecutionHandler {
+	public void rejectedExectuion(Runnable r, ThreadPoolExecutor e) {
+		// empty <-- 비어있음
+	}
+}
+```
+
+
+## CallerRunsPolicy
+```java
+ExecutorService es = new ThreadPoolExecutor(1,1,0, TimeUnit.SECONDS,  
+        new SynchronousQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
+```
+- 호출한 스레드가 작업을 수행 (생산자가 소비자 역할을 대신함)
+	- 이로 인해 새로운 작업을 제출하는 스레드의 속도가 느려질 수 있음
+	- 덕분에 생산 속도 조절이 가능 (**소비자 스레드 바로 생성 억제 가능**)
+- `CallerRunsPolicy`는 `RejectedExecutionHandler`의 구현체
+```java
+public static class CallerRunsPolicy implements RejectedExecutionHandler {
+	public void rejectedExectuion(Runnable r, ThreadPoolExecutor e) {
+		if(!e.isShutdown()){ // shutDown() 호출 시 호출한 스레드가 실행 되지 않도록 if()에서 호출
+			r.run(); // 호출한 스레드가 직접 실행
+		}
+	}
+}
+```
+
+- `ThreadPoolExecutor`를 `shutdown()`하면 이후 요청 하는 작업이 거절되는데 이때도 같은 정책이 적용됨
+- 그런데 `CallerRunsPolicy` 정책은 `shutDown()` 이후에도 작업을 수행함
+- 따라서 `shutdown()` 조건을  체크해서 이 경우에는 작업을 수행하지 않도록 해야함
+
+
+## 사용자 정의
+```java
+ExecutorService es = new ThreadPoolExecutor(1,1,0, TimeUnit.SECONDS,  
+        new SynchronousQueue<>(), new ThreadPoolExecutor.MyRejectedExecutionHandler());
+```
+- `RejectedExecutionHandler` 인터페이스를 구현하여 자신만의 거절 처리 전략 정의
+- 특정 요구사항에 맞는 작업 거절 방식을 설정 할 수 있음
+```java
+public static class MyRejectedExecutionHandler implements RejectedExecutionHandler {
+	static AtmoicInteger count = new AtomicInteger(0);
+	public void rejectedExectuion(Runnable r, ThreadPoolExecutor e) {
+		int i = count.incrementAndGet();
+		log("[경고] 거절된 누적 작업 수: " + i);
+	}
+}
+```
+
+
 
 
 
